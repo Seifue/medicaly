@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'dart:io';
@@ -48,6 +49,8 @@ class _textR_PageState extends State {
     return response;
   }
 
+  double recTextFont = 30;
+  double scale = 30;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,26 +145,57 @@ class _textR_PageState extends State {
                     ],
                   ),
                 ),
-                SizedBox(height: 60),
+                SizedBox(
+                  height: 60,
+                  child: myText != null
+                      ? Slider(
+                          activeColor: Dark ? Colors.grey : null,
+                          value: scale,
+                          min: 30,
+                          max: 50,
+                          divisions: 30,
+                          onChanged: (newscale) {
+                            setState(() {
+                              scale = newscale;
+                              recTextFont = newscale;
+                            });
+                          })
+                      : null,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: StadiumBorder(),
-                            backgroundColor:
-                                Dark ? Color.fromARGB(255, 77, 73, 73) : null,
-                            elevation: 4),
-                        onPressed: () async {
+                    AnimatedButton(
+                        textStyle: TextStyle(fontSize: 17, color: Colors.white),
+                        height: 35,
+                        width: 110,
+                        isReverse: true,
+                        selectedGradientColor: Dark
+                            ? LinearGradient(colors: [
+                                Color.fromARGB(255, 44, 43, 43),
+                                Colors.white
+                              ])
+                            : LinearGradient(
+                                colors: [Colors.white, Colors.white]),
+                        selectedTextColor: Colors.black,
+                        transitionType: TransitionType.TOP_TO_BOTTOM,
+                        backgroundColor: Dark
+                            ? Color.fromARGB(255, 77, 73, 73)
+                            : Colors.blue,
+                        borderColor: Dark ? Colors.white : Colors.blue,
+                        borderRadius: 50,
+                        borderWidth: 2,
+                        onPress: () async {
                           String? Text_After_Recog = await recognizeText(
                               InputImage.fromFile(File(pickedImage!.path)));
                           setState(() {
                             myText = Text_After_Recog;
                           });
                         },
-                        child: Text('Generate text'))
+                        text: ('Generate text')),
                   ],
-                )
+                ),
+                SizedBox(height: 25),
               ],
             ),
             myText != null
@@ -175,7 +209,7 @@ class _textR_PageState extends State {
                           child: Text(
                             myText!,
                             style: TextStyle(
-                                fontSize: 30,
+                                fontSize: recTextFont,
                                 color: Dark ? Colors.grey : Colors.black),
                           ),
                         )

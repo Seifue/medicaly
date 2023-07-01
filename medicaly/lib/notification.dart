@@ -10,7 +10,8 @@ Future<void> createSchedualedNotification(
           body: 'its $title Time',
           notificationLayout: NotificationLayout.BigText,
           wakeUpScreen: true,
-          category: NotificationCategory.Alarm),
+          category: NotificationCategory.Alarm,
+          customSound: 'resource://raw/sound.mp3'),
       actionButtons: [NotificationActionButton(key: 'Done', label: 'Taken')],
       schedule: NotificationCalendar(
           hour: hour,

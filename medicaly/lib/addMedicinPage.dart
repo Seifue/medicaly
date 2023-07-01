@@ -5,6 +5,7 @@ import 'package:medicaly/widgets.dart';
 import 'homePage.dart';
 import 'notification.dart';
 import 'sql.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 
 class addMedicinePage extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _addMedicinePageState extends State<addMedicinePage> {
   TimeOfDay selectedTime = TimeOfDay.now();
   String timeString = '';
   String timeString2 = '';
+  String MType = '';
   List<String> freqList = ['1', '2'];
   List<String> type = ['pill', 'syrup', 'injection', 'drop'];
   SqlDb sqldb = SqlDb();
@@ -258,7 +260,7 @@ class _addMedicinePageState extends State<addMedicinePage> {
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 2, color: Colors.grey),
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      label: Text('Dose',
+                      label: Text('Dose To Take At a Time',
                           style: TextStyle(color: Colors.grey, fontSize: 24)),
                       hintText: 'Enter Medicine Dose you will take',
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
@@ -275,7 +277,7 @@ class _addMedicinePageState extends State<addMedicinePage> {
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 2, color: Colors.grey),
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      label: Text('Quantity',
+                      label: Text('Quantity of Medicine You Have ',
                           style: TextStyle(color: Colors.grey, fontSize: 24)),
                       hintText: 'Enter Medicine Quantity You Have',
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
@@ -292,8 +294,8 @@ class _addMedicinePageState extends State<addMedicinePage> {
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 2, color: Colors.grey),
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      label: Text('When To Refill ?',
-                          style: TextStyle(color: Colors.grey, fontSize: 24)),
+                      label: Text('Remind To Refill When Quantity become',
+                          style: TextStyle(color: Colors.grey, fontSize: 20)),
                       hintText: 'Remind To Refill When Quantity Becoms',
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
                     ),
@@ -308,7 +310,7 @@ class _addMedicinePageState extends State<addMedicinePage> {
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 2, color: Colors.grey),
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      label: Text('Note',
+                      label: Text('Notes About Medicine To Remember',
                           style: TextStyle(color: Colors.grey, fontSize: 24)),
                       hintText: 'Enter MEdicine Notes',
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 10),
@@ -325,6 +327,7 @@ class _addMedicinePageState extends State<addMedicinePage> {
                       style: TextStyle(fontSize: 20, color: Colors.grey),
                     ),
                     DropdownButton(
+                        value: MType != '' ? MType : null,
                         style: TextStyle(
                             color: Dark ? Colors.white : Colors.black),
                         dropdownColor:
@@ -336,6 +339,9 @@ class _addMedicinePageState extends State<addMedicinePage> {
                           );
                         }).toList(),
                         onChanged: (value) {
+                          setState(() {
+                            MType = value!;
+                          });
                           if (value == null) {}
                           print(value);
                           switch (value) {
@@ -403,6 +409,10 @@ class _addMedicinePageState extends State<addMedicinePage> {
                           color: Colors.grey),
                     ),
                     ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Dark
+                                ? Color.fromARGB(255, 77, 73, 73)
+                                : Colors.blue),
                         onPressed: () {
                           _selectTime(context, timeString);
                         },
@@ -421,6 +431,10 @@ class _addMedicinePageState extends State<addMedicinePage> {
                                 color: Colors.grey),
                           ),
                           ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Dark
+                                      ? Color.fromARGB(255, 77, 73, 73)
+                                      : Colors.blue),
                               onPressed: () {
                                 _selectTime2(context, timeString2);
                               },
@@ -433,6 +447,10 @@ class _addMedicinePageState extends State<addMedicinePage> {
                 Container(
                   margin: EdgeInsets.only(top: 40),
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Dark ? Color.fromARGB(255, 77, 73, 73) : null,
+                        elevation: 4),
                     child: Text('Add Medicine'),
                     onPressed: () async {
                       if (nameController.text.isNotEmpty &&
@@ -462,7 +480,7 @@ class _addMedicinePageState extends State<addMedicinePage> {
                             int.parse(timeString2.split(':')[0]),
                             int.parse(timeString2.split(':')[1]),
                             nameController.text,
-                            r + 100);
+                            r + 100000);
 
                         Navigator.of(context).pushReplacementNamed('/home');
                       } else if (nameController.text.isNotEmpty &&

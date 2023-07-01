@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "421591876186",
+    "project_id": "medically-82200",
+    "storage_bucket": "medically-82200.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421591876186:android:46a6a98d0f5895af08ce63",
+        "android_client_info": {
+          "package_name": "com.example.medicaly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "421591876186-5j7nd5bk6gseuf3jaq7s2h90242chfs7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.medicaly",
+            "certificate_hash": "fadd8d7cb8eaf3bcd229822e892effa0341d088b"
+          }
+        },
+        {
+          "client_id": "421591876186-c18t13kn834kddhv2f572493ob9aum26.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSsbflTs2qeenH5yiV9dKnFjcJ4qNF-S4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "421591876186-c18t13kn834kddhv2f572493ob9aum26.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

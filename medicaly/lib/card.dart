@@ -141,8 +141,9 @@ Widget Card1(
                               ? (int.parse(Time.split(':')[0]) - 12)
                                       .toString() +
                                   ':' +
-                                  Time.split(':')[1]
-                              : Time,
+                                  Time.split(':')[1] +
+                                  ' pm'
+                              : Time + ' am',
                           style: TextStyle(fontSize: 24, color: Colors.white),
                         ),
                       )
@@ -160,8 +161,9 @@ Widget Card1(
                                     ? (int.parse(Timet.split(':')[0]) - 12)
                                             .toString() +
                                         ':' +
-                                        Timet.split(':')[1]
-                                    : Timet,
+                                        Timet.split(':')[1] +
+                                        ' pm'
+                                    : Timet + ' am',
                                 style: TextStyle(
                                     fontSize: 24, color: Colors.white),
                               ),
@@ -284,7 +286,7 @@ Widget Card1(
                                                   if (medList[i]['frequancy'] ==
                                                       2) {
                                                     await AwesomeNotifications()
-                                                        .cancel(rowId + 100);
+                                                        .cancel(rowId + 100000);
                                                   }
                                                 }
                                                 await sql.delete(

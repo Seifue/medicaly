@@ -14,32 +14,56 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => _HomaPageState();
 }
 
-Future<void> actionEvent(SqlDb sql) async {
-  await AwesomeNotifications().setListeners(
-      onActionReceivedMethod: (ReceivedAction notification) async {
-    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //     builder: ((context) => notificationPage(notification.id!))));
-    await sql.update(
-        'UPDATE medicine SET quantity = quantity-dose WHERE id = "${notification.id}"');
-    List<Map> row = await sql
-        .read('SELECT * FROM medicine WHERE id = "${notification.id}"');
-    if (row[0]['quantity'] <= row[0]['refill']) {
-      AwesomeNotifications().createNotification(
-          content: NotificationContent(
-              id: notification.id! + 100,
-              channelKey: "basic key",
-              title: "Quantity Getting low",
-              body:
-                  "Your Medicine ${row[0]['name']} has Low Quantity Please Refill",
-              notificationLayout: NotificationLayout.BigText,
-              category: NotificationCategory.Message,
-              fullScreenIntent: true));
-    }
-    //Navigator.of(context).popAndPushNamed('/home');
-    Get.offNamed('/home');
-    throw ('');
-  });
-}
+// Future<void> actionEvent(SqlDb sql) async {
+//   await AwesomeNotifications().setListeners(
+//       onActionReceivedMethod: (ReceivedAction notification) async {
+//     // Navigator.of(context).pushReplacement(MaterialPageRoute(
+//     //     builder: ((context) => notificationPage(notification.id!))));
+//     if (notification.id! < 100000) {
+//       await sql.update(
+//           'UPDATE medicine SET quantity = quantity-dose WHERE id = "${notification.id}"');
+//       List<Map> row = await sql
+//           .read('SELECT * FROM medicine WHERE id = "${notification.id}"');
+
+//       if (row[0]['quantity'] <= row[0]['refill']) {
+//         AwesomeNotifications().createNotification(
+//             content: NotificationContent(
+//                 id: notification.id! + 100,
+//                 channelKey: "basic key",
+//                 title: "Quantity Getting low",
+//                 body:
+//                     "Your Medicine ${row[0]['name']} has Low Quantity Please Refill",
+//                 notificationLayout: NotificationLayout.BigText,
+//                 category: NotificationCategory.Message,
+//                 fullScreenIntent: true));
+//       }
+//       //Navigator.of(context).popAndPushNamed('/home');
+//       Get.offNamed('/home');
+//       throw ('');
+//     } else {
+//       await sql.update(
+//           'UPDATE medicine SET quantity = quantity-dose WHERE id = "${notification.id! - 100000}"');
+//       List<Map> row = await sql.read(
+//           'SELECT * FROM medicine WHERE id = "${notification.id! - 100000}"');
+
+//       if (row[0]['quantity'] <= row[0]['refill']) {
+//         AwesomeNotifications().createNotification(
+//             content: NotificationContent(
+//                 id: notification.id! + 100,
+//                 channelKey: "basic key",
+//                 title: "Quantity Getting low",
+//                 body:
+//                     "Your Medicine ${row[0]['name']} has Low Quantity Please Refill",
+//                 notificationLayout: NotificationLayout.BigText,
+//                 category: NotificationCategory.Message,
+//                 fullScreenIntent: true));
+//       }
+//       //Navigator.of(context).popAndPushNamed('/home');
+//       Get.offNamed('/home');
+//       throw ('');
+//     }
+//   });
+// }
 
 bool Dark = true;
 List<Map> medList = [];
@@ -60,7 +84,7 @@ class _HomaPageState extends State<HomePage> {
   @override
   void initState() {
     AwesomeNotifications().requestPermissionToSendNotifications();
-
+    NotificationController.startListeningNotificationEvents();
     readData();
 
     super.initState();
@@ -162,43 +186,80 @@ class _HomaPageState extends State<HomePage> {
         ],
       ),
       body: barIndex == 0
-          ? Container(
-              decoration: Dark == true
-                  ? BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                      Color.fromARGB(255, 70, 68, 68),
-                      Colors.black87
-                    ], begin: Alignment.bottomCenter, end: Alignment.topCenter))
-                  : null,
-              child: RefreshIndicator(
-                onRefresh: readData,
-                child: ListView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    children: [
-                      ListView.builder(
-                        itemCount: medList.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, i) {
-                          return Card1(
-                              medList[i]['name'].toString(),
-                              medList[i]['time'].toString(),
-                              medList[i]['timet'].toString(),
-                              medList[i]['frequancy'],
-                              medList[i]['type'],
-                              medList[i]['quantity'],
-                              context,
-                              sql,
-                              medList[i]['id'],
-                              readData,
-                              medList[i]['note'],
-                              medList[i]['dose'].toString(),
-                              medList[i]['refill'].toString());
-                        },
-                      )
-                    ]),
-              ),
-            )
+          ? medList.isNotEmpty
+              ? Container(
+                  decoration: Dark == true
+                      ? BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                              Color.fromARGB(255, 70, 68, 68),
+                              Colors.black87
+                            ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter))
+                      : null,
+                  child: RefreshIndicator(
+                    color: Dark ? Colors.white : Colors.blue,
+                    backgroundColor: Dark ? Colors.black : Colors.white,
+                    onRefresh: readData,
+                    child: ListView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        children: [
+                          ListView.builder(
+                            itemCount: medList.length,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, i) {
+                              return Card1(
+                                  medList[i]['name'].toString(),
+                                  medList[i]['time'].toString(),
+                                  medList[i]['timet'].toString(),
+                                  medList[i]['frequancy'],
+                                  medList[i]['type'],
+                                  medList[i]['quantity'],
+                                  context,
+                                  sql,
+                                  medList[i]['id'],
+                                  readData,
+                                  medList[i]['note'],
+                                  medList[i]['dose'].toString(),
+                                  medList[i]['refill'].toString());
+                            },
+                          )
+                        ]),
+                  ),
+                )
+              : Container(
+                  decoration: Dark == true
+                      ? BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                              Color.fromARGB(255, 70, 68, 68),
+                              Colors.black87
+                            ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter))
+                      : null,
+                  child: Center(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                        Icon(
+                          Icons.alarm_add_rounded,
+                          size: 50,
+                          color: Dark ? Colors.white : Colors.black,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Add Your Medicines',
+                          style: TextStyle(
+                              color: Dark ? Colors.white : Colors.black,
+                              fontSize: 20),
+                        )
+                      ])),
+                )
           : barIndex == 1
               ? textR_Page()
               : Export()
@@ -247,5 +308,61 @@ class _HomaPageState extends State<HomePage> {
             )
           : null,
     );
+  }
+}
+
+class NotificationController {
+  static Future<void> startListeningNotificationEvents() async {
+    AwesomeNotifications()
+        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> onActionReceivedMethod(
+      ReceivedAction notification) async {
+    SqlDb sql = SqlDb();
+    if (notification.id! < 100000) {
+      await sql.update(
+          'UPDATE medicine SET quantity = quantity-dose WHERE id = "${notification.id}"');
+      List<Map> row = await sql
+          .read('SELECT * FROM medicine WHERE id = "${notification.id}"');
+
+      if (row[0]['quantity'] <= row[0]['refill']) {
+        AwesomeNotifications().createNotification(
+            content: NotificationContent(
+                id: notification.id! + 100,
+                channelKey: "basic key",
+                title: "Quantity Getting low",
+                body:
+                    "Your Medicine ${row[0]['name']} has Low Quantity Please Refill",
+                notificationLayout: NotificationLayout.BigText,
+                category: NotificationCategory.Message,
+                fullScreenIntent: true));
+      }
+      //Navigator.of(context).popAndPushNamed('/home');
+      Get.offNamed('/home');
+      throw ('');
+    } else {
+      await sql.update(
+          'UPDATE medicine SET quantity = quantity-dose WHERE id = "${notification.id! - 100000}"');
+      List<Map> row = await sql.read(
+          'SELECT * FROM medicine WHERE id = "${notification.id! - 100000}"');
+
+      if (row[0]['quantity'] <= row[0]['refill']) {
+        AwesomeNotifications().createNotification(
+            content: NotificationContent(
+                id: notification.id! + 100,
+                channelKey: "basic key",
+                title: "Quantity Getting low",
+                body:
+                    "Your Medicine ${row[0]['name']} has Low Quantity Please Refill",
+                notificationLayout: NotificationLayout.BigText,
+                category: NotificationCategory.Message,
+                fullScreenIntent: true));
+      }
+      //Navigator.of(context).popAndPushNamed('/home');
+      Get.offNamed('/home');
+      throw ('');
+    }
   }
 }
